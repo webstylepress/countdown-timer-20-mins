@@ -1,0 +1,83 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Countdown Timer</title>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.4/moment.min.js"></script>
+		<style>
+			body {
+				font-family: Arial, sans-serif;
+				text-align: center;
+				margin-top: 50px;
+			}
+			#current-time,
+			#countdown {
+				font-size: 24px;
+				margin: 20px;
+			}
+			button {
+				font-size: 16px;
+				padding: 10px;
+				margin: 10px;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="current-time">Current time: --:--:--</div>
+		<div id="countdown">05 min : 00 sec left</div>
+		<button onclick="startTimer()">Start</button>
+		<button onclick="stopTimer()">Stop</button>
+		<button onclick="resetTimer()">Reset</button>
+
+		<script>
+			let timerInterval;
+			let remainingSeconds = 1200; // 5 minutes in seconds
+
+			function updateTime() {
+				const now = moment();
+				document.getElementById(
+					'current-time',
+				).innerText = `Current time: ${now.format('hh:mm:ss A')}`;
+			}
+
+			function updateCountdown() {
+				const countdownMinutes = Math.floor(remainingSeconds / 60); // convert to minutes
+				const countdownSeconds = remainingSeconds % 60; // convert to seconds
+				document.getElementById('countdown').innerText = `${String(
+					countdownMinutes,
+				).padStart(2, '0')} min : ${String(countdownSeconds).padStart(
+					2,
+					'0',
+				)} sec left`;
+			}
+
+			function startTimer() {
+				if (timerInterval) return; // Prevent multiple intervals
+				timerInterval = setInterval(() => {
+					if (remainingSeconds > 0) {
+						remainingSeconds--;
+						updateTime();
+						updateCountdown();
+					} else {
+						clearInterval(timerInterval);
+						timerInterval = null;
+						resetTimer();
+					}
+				}, 1000);
+			}
+			function stopTimer() {
+				clearInterval(timerInterval);
+				timerInterval = null;
+			}
+			function resetTimer() {
+				stopTimer();
+				remainingSeconds = 1200; // Reset to 5 minutes
+				updateCountdown();
+			}
+			updateTime();
+			updateCountdown();
+			setInterval(updateTime, 1000); // Keep updating current time
+		</script>
+	</body>
+</html>
